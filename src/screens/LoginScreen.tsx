@@ -2,7 +2,10 @@ import React, { useState } from "react";
 
 import {
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -22,15 +25,12 @@ export default function LoginScreen({ navigation }: any) {
     if (error instanceof FirebaseError) {
       switch (error.code) {
         case "auth/configuration-not-found":
-
           return "Configuracao de login nao encontrada no Firebase. Ative Email/Senha em Authentication > Sign-in method.";
-          
-        case "auth/operation-not-allowed":
 
+        case "auth/operation-not-allowed":
           return "Login por Email/Senha nao esta habilitado no Firebase Console.";
 
         case "auth/invalid-email":
-
           return "E-mail invalido.";
 
         case "auth/user-not-found":
@@ -38,15 +38,12 @@ export default function LoginScreen({ navigation }: any) {
         case "auth/wrong-password":
 
         case "auth/invalid-credential":
-
           return "E-mail ou senha incorretos.";
 
         case "auth/too-many-requests":
-
           return "Muitas tentativas. Tente novamente em alguns minutos.";
 
         case "auth/network-request-failed":
-
           return "Falha de rede. Verifique sua conexao.";
 
         default:
@@ -74,50 +71,69 @@ export default function LoginScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.bgBlobOne} />
-      <View style={styles.bgBlobTwo} />
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 24 : 0}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.bgBlobOne} />
+          <View style={styles.bgBlobTwo} />
 
-      <View style={styles.container}>
-        <Text style={styles.brand}>NOTAS APP</Text>
-        <Text style={styles.title}>Entrar</Text>
-        <Text style={styles.subtitle}>Acesse sua conta para continuar</Text>
+          <View style={styles.container}>
+            <Text style={styles.brand}>NOTAS APP</Text>
+            <Text style={styles.title}>Entrar</Text>
+            <Text style={styles.subtitle}>Acesse sua conta para continuar</Text>
 
-        <View style={styles.card}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#72809B"
-            value={email}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor="#72809B"
-            value={password}
-            secureTextEntry
-            onChangeText={setPassword}
-          />
+            <View style={styles.card}>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#72809B"
+                value={email}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Senha"
+                placeholderTextColor="#72809B"
+                value={password}
+                secureTextEntry
+                onChangeText={setPassword}
+              />
 
-          <Pressable style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>Entrar</Text>
-          </Pressable>
+              <Pressable style={styles.loginButton} onPress={handleLogin}>
+                <Text style={styles.loginButtonText}>Entrar</Text>
+              </Pressable>
 
-          <Pressable
-            style={styles.secondaryButton}
-            onPress={() => navigation.navigate("Register")}
-          >
-            <Text style={styles.secondaryButtonText}>Criar conta</Text>
-          </Pressable>
-        </View>
-      </View>
+              <Pressable
+                style={styles.secondaryButton}
+                onPress={() => navigation.navigate("Register")}
+              >
+                <Text style={styles.secondaryButtonText}>Criar conta</Text>
+              </Pressable>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
   safeArea: {
     flex: 1,
     backgroundColor: "#F4F8FF",

@@ -1,50 +1,106 @@
-# Welcome to your Expo app 👋
+# App de Notas
+Aplicativo de notas, feito para checkpoint de mobile.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
+## Descricao do projeto
 
-1. Install dependencies
+Aplicativo mobile desenvolvido em React Native com autenticacao de usuarios e CRUD de notas no Firebase.
 
-   ```bash
-   npm install
-   ```
+Funcionalidades implementadas:
 
-2. Start the app
+- Cadastro com e-mail e senha
+- Login e logout
+- Criacao de nota
+- Listagem de notas do usuario logado
+- Edicao de nota
+- Exclusao de nota com confirmacao
+- Indicador de carregamento na tela principal
 
-   ```bash
-   npx expo start
-   ```
+Regra de negocio:
 
-In the output, you'll find options to open the app in a
+- Cada usuario visualiza e altera apenas as proprias notas
+- Nao e possivel acessar a area de notas sem login
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Tecnologias utilizadas
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- React Native
+- Expo
+- Firebase Authentication
+- Cloud Firestore
+- React Navigation
+- TypeScript
 
-## Get a fresh project
+## Como rodar o projeto
 
-When you're ready, run:
+### 1. Clonar repositorio
 
 ```bash
-npm run reset-project
+git clone https://github.com/fabioeduu/notas.git
+cd notas-app-novo
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Instalar dependencias
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Configurar variaveis de ambiente
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Crie um arquivo `.env` na raiz com o seguinte formato:
 
-## Join the community
+```env
+EXPO_PUBLIC_FIREBASE_API_KEY=
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+EXPO_PUBLIC_FIREBASE_APP_ID=
+EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=
+```
 
-Join our community of developers creating universal apps.
+### 4. Configurar Firebase Authentication
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+No Firebase Console:
+
+1. Authentication
+2. Sign-in method
+3. Ativar `Email/Password`
+
+### 5. Configurar regras do Firestore
+
+Publicar o arquivo [firestore.rules](firestore.rules) com o comando:
+
+```bash
+firebase deploy --only firestore:rules
+```
+
+### 6. Iniciar aplicacao
+
+```bash
+npm run start
+```
+
+## Video de demonstracao (max. 5 min)
+
+Link do video:
+
+- link aqui
+
+## Integrantes
+
+- Nome: Fabio H S Eduardo | RM:560416
+- Nome: Renato Kenji Sugaki | RM:
+- Nome: Gabriel Wu Castro | RM:560210
+
+
+## Estrutura de telas
+
+- Tela de Login
+- Tela de Cadastro
+- Tela principal com lista de notas
+- Tela para criar/editar nota
+
+## Obs:
+- O projeto utiliza variaveis `EXPO_PUBLIC_*` para configuracao do Firebase.
+- Em caso de erro `auth/configuration-not-found`, validar se o provedor Email/Senha esta habilitado no Authentication.

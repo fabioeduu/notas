@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { createNote, updateNote } from "../services/noteService";
@@ -12,56 +22,85 @@ export default function NoteScreen({ route, navigation }: any) {
 
   const handleSave = async () => {
     if (!title.trim()) {
+      Alert.alert("Campo obrigatorio", "Digite um titulo para a nota.");
       return;
     }
 
-    if (note) {
-      await updateNote(note.id, title.trim());
-    } else {
-      await createNote(title.trim());
+    try {
+      if (note) {
+        await updateNote(note.id, title.trim());
+      } else {
+        await createNote(title.trim());
+      }
+      navigation.goBack();
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Nao foi possivel salvar a nota.";
+      Alert.alert("Erro", message);
     }
-    navigation.goBack();
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.bgCircleOne} />
-      <View style={styles.bgCircleTwo} />
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 24 : 0}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.bgCircleOne} />
+          <View style={styles.bgCircleTwo} />
 
-      <View style={styles.container}>
-        <Text style={styles.title}>{note ? "Editar nota" : "Nova nota"}</Text>
-        <Text style={styles.subtitle}>
-          Escreva algo que voce nao quer esquecer.
-        </Text>
+          <View style={styles.container}>
+            <Text style={styles.title}>
+              {note ? "Editar nota" : "Nova nota"}
+            </Text>
+            <Text style={styles.subtitle}>
+              Escreva algo que voce nao quer esquecer.
+            </Text>
 
-        <View style={styles.card}>
-          <TextInput
-            style={styles.input}
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Digite sua nota aqui"
-            placeholderTextColor="#7A879E"
-            multiline
-            textAlignVertical="top"
-          />
+            <View style={styles.card}>
+              <TextInput
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Digite sua nota aqui"
+                placeholderTextColor="#7A879E"
+                multiline
+                textAlignVertical="top"
+              />
 
-          <Pressable style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.saveButtonText}>Salvar</Text>
-          </Pressable>
+              <Pressable style={styles.saveButton} onPress={handleSave}>
+                <Text style={styles.saveButtonText}>Salvar</Text>
+              </Pressable>
 
-          <Pressable
-            style={styles.cancelButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.cancelButtonText}>Cancelar</Text>
-          </Pressable>
-        </View>
-      </View>
+              <Pressable
+                style={styles.cancelButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
   safeArea: {
     flex: 1,
     backgroundColor: "#F6F8FF",
@@ -73,7 +112,7 @@ const styles = StyleSheet.create({
   },
   bgCircleOne: {
     position: "absolute",
-    top: -90,
+    top: -0,
     right: -90,
     width: 240,
     height: 240,
@@ -82,7 +121,7 @@ const styles = StyleSheet.create({
   },
   bgCircleTwo: {
     position: "absolute",
-    bottom: -80,
+    bottom: 80,
     left: -70,
     width: 200,
     height: 200,

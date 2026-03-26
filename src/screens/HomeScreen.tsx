@@ -22,6 +22,12 @@ export default function HomeScreen({ navigation }: any) {
       setLoading(true);
       const data = await getNotes();
       setNotes(data);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Nao foi possivel carregar as notas.";
+      Alert.alert("Erro", message);
     } finally {
       setLoading(false);
     }
@@ -39,7 +45,18 @@ export default function HomeScreen({ navigation }: any) {
       {
         text: "Excluir",
         style: "destructive",
-        onPress: () => deleteNote(id).then(loadNotes),
+        onPress: async () => {
+          try {
+            await deleteNote(id);
+            await loadNotes();
+          } catch (error) {
+            const message =
+              error instanceof Error
+                ? error.message
+                : "Nao foi possivel excluir a nota.";
+            Alert.alert("Erro", message);
+          }
+        },
       },
     ]);
   };
@@ -70,7 +87,7 @@ export default function HomeScreen({ navigation }: any) {
           style={styles.newNoteButton}
           onPress={() => navigation.navigate("Note")}
         >
-          <Text style={styles.newNoteButtonText}>+ Nova nota</Text>
+          <Text style={styles.newNoteButtonText}>+ NOVA NOTA</Text>
         </Pressable>
 
         <FlatList

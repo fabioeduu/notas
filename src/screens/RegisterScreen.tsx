@@ -2,7 +2,10 @@ import React, { useState } from "react";
 
 import {
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -23,12 +26,16 @@ export default function RegisterScreen({ navigation }: any) {
       switch (error.code) {
         case "auth/configuration-not-found":
           return "Configuracao de cadastro nao encontrada no Firebase. Ative Email/Senha em Authentication > Sign-in method.";
+
         case "auth/email-already-in-use":
           return "Este e-mail ja esta em uso.";
+
         case "auth/invalid-email":
           return "E-mail invalido.";
+
         case "auth/weak-password":
           return "A senha precisa ter pelo menos 6 caracteres.";
+
         case "auth/operation-not-allowed":
           return "Cadastro por e-mail/senha nao esta habilitado no Firebase Console.";
         default:
@@ -58,52 +65,73 @@ export default function RegisterScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.bgBlobOne} />
-      <View style={styles.bgBlobTwo} />
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 24 : 0}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.bgBlobOne} />
+          <View style={styles.bgBlobTwo} />
 
-      <View style={styles.container}>
-        <Text style={styles.brand}>NOTAS APP</Text>
-        <Text style={styles.title}>Criar conta</Text>
-        <Text style={styles.subtitle}>
-          Comece a guardar suas ideias em segundos
-        </Text>
+          <View style={styles.container}>
+            <Text style={styles.brand}>NOTAS APP</Text>
+            <Text style={styles.title}>Criar conta</Text>
+            <Text style={styles.subtitle}>
+              Comece a guardar suas ideias em segundos
+            </Text>
 
-        <View style={styles.card}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#72809B"
-            value={email}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor="#72809B"
-            value={password}
-            secureTextEntry
-            onChangeText={setPassword}
-          />
+            <View style={styles.card}>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#72809B"
+                value={email}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Senha"
+                placeholderTextColor="#72809B"
+                value={password}
+                secureTextEntry
+                onChangeText={setPassword}
+              />
 
-          <Pressable style={styles.primaryButton} onPress={handleRegister}>
-            <Text style={styles.primaryButtonText}>Cadastrar</Text>
-          </Pressable>
+              <Pressable style={styles.primaryButton} onPress={handleRegister}>
+                <Text style={styles.primaryButtonText}>Cadastrar</Text>
+              </Pressable>
 
-          <Pressable
-            style={styles.secondaryButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.secondaryButtonText}>Voltar para login</Text>
-          </Pressable>
-        </View>
-      </View>
+              <Pressable
+                style={styles.secondaryButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Text style={styles.secondaryButtonText}>
+                  Voltar para login
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
   safeArea: {
     flex: 1,
     backgroundColor: "#FFF8EF",
