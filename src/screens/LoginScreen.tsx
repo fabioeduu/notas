@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   bgBlobOne: {
     position: "absolute",
-    top: -70,
+    top: 0,
     left: -90,
     width: 250,
     height: 250,
@@ -154,10 +154,10 @@ const styles = StyleSheet.create({
   },
   bgBlobTwo: {
     position: "absolute",
-    bottom: -90,
-    right: -70,
-    width: 230,
-    height: 230,
+    bottom: 90,
+    right: -20,
+    width: 250,
+    height: 240,
     borderRadius: 120,
     backgroundColor: "#FFDCC5",
   },

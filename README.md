@@ -85,12 +85,14 @@ npm run start
 
 Link do video:
 
-- link aqui
+- video mobile: https://youtube.com/shorts/HrdyIHgJtgY
+
+- video firebase: https://youtu.be/UT0ByFGjR6c
 
 ## Integrantes
 
 - Nome: Fabio H S Eduardo | RM:560416
-- Nome: Renato Kenji Sugaki | RM:
+- Nome: Renato Kenji Sugaki | RM:559810
 - Nome: Gabriel Wu Castro | RM:560210
 
 
