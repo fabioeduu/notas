@@ -22,6 +22,61 @@ if (missingVars.length > 0) {
   throw new Error(`Missing Firebase env vars: ${missingVars.join(", ")}`);
 }
 
+const invalidPlaceholders = [
+  "SUA_API_KEY",
+  "SEU_PROJECT",
+  "SEU_PROJECT_ID",
+  "SEU_STORAGE_BUCKET",
+  "SEU_MESSAGING_SENDER_ID",
+  "SEU_APP_ID",
+];
+
+const assertValidFirebaseValue = (name: string, value: string | undefined) => {
+  if (!value) {
+    return;
+  }
+
+  if (invalidPlaceholders.some((placeholder) => value.includes(placeholder))) {
+    throw new Error(
+      `Invalid Firebase env var: ${name} still uses a placeholder value.`,
+    );
+  }
+};
+
+assertValidFirebaseValue(
+  "EXPO_PUBLIC_FIREBASE_API_KEY",
+  process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+);
+assertValidFirebaseValue(
+  "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN",
+  process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+);
+assertValidFirebaseValue(
+  "EXPO_PUBLIC_FIREBASE_PROJECT_ID",
+  process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+);
+assertValidFirebaseValue(
+  "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET",
+  process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+);
+assertValidFirebaseValue(
+  "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+  process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+);
+assertValidFirebaseValue(
+  "EXPO_PUBLIC_FIREBASE_APP_ID",
+  process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+);
+
+if (
+  process.env.EXPO_PUBLIC_FIREBASE_API_KEY &&
+  !process.env.EXPO_PUBLIC_FIREBASE_API_KEY.startsWith("AIza")
+) {
+  throw new Error(
+    "Invalid Firebase API key: expected a Google/Firebase web API key (usually starts with AIza).",
+  );
+}
+
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
