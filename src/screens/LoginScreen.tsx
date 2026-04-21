@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import { FirebaseError } from "firebase/app";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -12,60 +12,66 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { FirebaseError } from "firebase/app";
-
+import { useI18n } from "../hooks/useI18n";
 import { login } from "../services/authService";
+import {
+  requestNotificationPermission,
+  sendNotification,
+} from "../services/notificationService";
 
 export default function LoginScreen({ navigation }: any) {
+  const { auth, notifications, common } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const getLoginErrorMessage = (error: unknown) => {
+  useEffect(() => {
+    requestNotificationPermission().catch(() => undefined);
+  }, []);
+
+  const getLoginErrorMessage = (error: unknown): string => {
     if (error instanceof FirebaseError) {
       switch (error.code) {
         case "auth/configuration-not-found":
           return "Configuracao de login nao encontrada no Firebase. Ative Email/Senha em Authentication > Sign-in method.";
-
         case "auth/operation-not-allowed":
           return "Login por Email/Senha nao esta habilitado no Firebase Console.";
-
         case "auth/invalid-email":
-          return "E-mail invalido.";
-
+          return auth.invalidEmail;
         case "auth/user-not-found":
-
         case "auth/wrong-password":
-
         case "auth/invalid-credential":
           return "E-mail ou senha incorretos.";
-
         case "auth/too-many-requests":
           return "Muitas tentativas. Tente novamente em alguns minutos.";
-
         case "auth/network-request-failed":
           return "Falha de rede. Verifique sua conexao.";
-
         default:
           return `Falha no login (${error.code}).`;
       }
     }
-
-    return "Erro inesperado ao fazer login.";
+    return auth.loginError;
   };
 
   const handleLogin = async () => {
-    const normalizedEmail = email.trim();
+    const normalizedEmail = email.trim().toLowerCase();
 
     if (!normalizedEmail || !password) {
-      Alert.alert("Campos obrigatorios", "Preencha e-mail e senha.");
+      Alert.alert(common.error, "Preencha e-mail e senha.");
       return;
     }
 
     try {
+      setLoading(true);
       await login(normalizedEmail, password);
+      await sendNotification(
+        notifications.welcome,
+        notifications.welcomeMessage,
+      );
     } catch (error) {
-      Alert.alert("Erro", getLoginErrorMessage(error));
+      Alert.alert(common.error, getLoginErrorMessage(error));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,37 +92,49 @@ export default function LoginScreen({ navigation }: any) {
 
           <View style={styles.container}>
             <Text style={styles.brand}>NOTAS APP</Text>
-            <Text style={styles.title}>Entrar</Text>
+            <Text style={styles.title}>{auth.login}</Text>
             <Text style={styles.subtitle}>Acesse sua conta para continuar</Text>
 
             <View style={styles.card}>
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder={auth.email}
                 placeholderTextColor="#72809B"
                 value={email}
                 autoCapitalize="none"
                 keyboardType="email-address"
                 onChangeText={setEmail}
+                editable={!loading}
               />
               <TextInput
                 style={styles.input}
-                placeholder="Senha"
+                placeholder={auth.password}
                 placeholderTextColor="#72809B"
                 value={password}
                 secureTextEntry
                 onChangeText={setPassword}
+                editable={!loading}
               />
 
-              <Pressable style={styles.loginButton} onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>Entrar</Text>
+              <Pressable
+                style={[styles.loginButton, loading && styles.disabledButton]}
+                onPress={handleLogin}
+                disabled={loading}
+              >
+                <Text style={styles.loginButtonText}>{auth.login}</Text>
               </Pressable>
 
               <Pressable
-                style={styles.secondaryButton}
+                style={[
+                  styles.secondaryButton,
+                  loading && styles.disabledButton,
+                ]}
                 onPress={() => navigation.navigate("Register")}
+                disabled={loading}
               >
-                <Text style={styles.secondaryButtonText}>Criar conta</Text>
+                <Text style={styles.secondaryButtonText}>
+                  {auth.registerHere}
+                </Text>
               </Pressable>
             </View>
           </View>
@@ -221,5 +239,8 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: "#2D456F",
     fontWeight: "700",
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });

@@ -15,11 +15,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { FirebaseError } from "firebase/app";
 
+import { useI18n } from "../hooks/useI18n";
 import { register } from "../services/authService";
 
 export default function RegisterScreen({ navigation }: any) {
+  const { auth, common } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const getRegisterErrorMessage = (error: unknown) => {
     if (error instanceof FirebaseError) {
@@ -43,23 +46,26 @@ export default function RegisterScreen({ navigation }: any) {
       }
     }
 
-    return "Erro inesperado ao cadastrar.";
+    return auth.registerError;
   };
 
   const handleRegister = async () => {
-    const normalizedEmail = email.trim();
+    const normalizedEmail = email.trim().toLowerCase();
 
     if (!normalizedEmail || !password) {
-      Alert.alert("Campos obrigatorios", "Preencha e-mail e senha.");
+      Alert.alert(common.error, "Preencha e-mail e senha.");
       return;
     }
 
     try {
+      setLoading(true);
       await register(normalizedEmail, password);
-      Alert.alert("Sucesso", "Conta criada!");
+      Alert.alert(common.success, "Conta criada!");
       navigation.goBack();
     } catch (error) {
-      Alert.alert("Erro", getRegisterErrorMessage(error));
+      Alert.alert(common.error, getRegisterErrorMessage(error));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,7 +86,7 @@ export default function RegisterScreen({ navigation }: any) {
 
           <View style={styles.container}>
             <Text style={styles.brand}>NOTAS APP</Text>
-            <Text style={styles.title}>Criar conta</Text>
+            <Text style={styles.title}>{auth.register}</Text>
             <Text style={styles.subtitle}>
               Comece a guardar suas ideias em segundos
             </Text>
@@ -88,33 +94,41 @@ export default function RegisterScreen({ navigation }: any) {
             <View style={styles.card}>
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder={auth.email}
                 placeholderTextColor="#72809B"
                 value={email}
                 autoCapitalize="none"
                 keyboardType="email-address"
                 onChangeText={setEmail}
+                editable={!loading}
               />
               <TextInput
                 style={styles.input}
-                placeholder="Senha"
+                placeholder={auth.password}
                 placeholderTextColor="#72809B"
                 value={password}
                 secureTextEntry
                 onChangeText={setPassword}
+                editable={!loading}
               />
 
-              <Pressable style={styles.primaryButton} onPress={handleRegister}>
-                <Text style={styles.primaryButtonText}>Cadastrar</Text>
+              <Pressable
+                style={[styles.primaryButton, loading && styles.disabledButton]}
+                onPress={handleRegister}
+                disabled={loading}
+              >
+                <Text style={styles.primaryButtonText}>{auth.register}</Text>
               </Pressable>
 
               <Pressable
-                style={styles.secondaryButton}
+                style={[
+                  styles.secondaryButton,
+                  loading && styles.disabledButton,
+                ]}
                 onPress={() => navigation.goBack()}
+                disabled={loading}
               >
-                <Text style={styles.secondaryButtonText}>
-                  Voltar para login
-                </Text>
+                <Text style={styles.secondaryButtonText}>{auth.loginHere}</Text>
               </Pressable>
             </View>
           </View>
@@ -219,5 +233,8 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: "#6D4A31",
     fontWeight: "700",
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });
