@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import { Ionicons } from "@expo/vector-icons";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -13,33 +14,69 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import MapModal from "../components/MapModal";
+import { useI18n } from "../hooks/useI18n";
+import { useLocation } from "../hooks/useLocation";
 import { createNote, updateNote } from "../services/noteService";
+import { sendNotification } from "../services/notificationService";
 
 export default function NoteScreen({ route, navigation }: any) {
+  const { note: noteTexts, notifications, common } = useI18n();
+  const {
+    location,
+    getLocation,
+    loading: loadingLocation,
+    error: locationError,
+  } = useLocation();
   const note = route.params?.note;
 
   const [title, setTitle] = useState(note?.title || "");
+  const [content, setContent] = useState(note?.content || "");
+  const [saving, setSaving] = useState(false);
+  const [showMap, setShowMap] = useState(false);
 
   const handleSave = async () => {
     if (!title.trim()) {
-      Alert.alert("Campo obrigatorio", "Digite um titulo para a nota.");
+      Alert.alert(common.error, "Digite um titulo para a nota.");
       return;
     }
 
     try {
+      setSaving(true);
       if (note) {
-        await updateNote(note.id, title.trim());
+        await updateNote(
+          note.id,
+          title.trim(),
+          content.trim(),
+          location?.latitude,
+          location?.longitude,
+          location?.address,
+        );
       } else {
-        await createNote(title.trim());
+        await createNote(
+          title.trim(),
+          content.trim(),
+          location?.latitude,
+          location?.longitude,
+          location?.address,
+        );
+        await sendNotification(
+          notifications.noteCreated,
+          notifications.noteCreatedMessage,
+        );
       }
       navigation.goBack();
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "Nao foi possivel salvar a nota.";
-      Alert.alert("Erro", message);
+        error instanceof Error ? error.message : noteTexts.saveError;
+      Alert.alert(common.error, message);
+    } finally {
+      setSaving(false);
     }
+  };
+
+  const handleCaptureLocation = async () => {
+    await getLocation(true);
   };
 
   return (
@@ -59,7 +96,7 @@ export default function NoteScreen({ route, navigation }: any) {
 
           <View style={styles.container}>
             <Text style={styles.title}>
-              {note ? "Editar nota" : "Nova nota"}
+              {note ? noteTexts.title : noteTexts.title}
             </Text>
             <Text style={styles.subtitle}>
               Escreva algo que voce nao quer esquecer.
@@ -70,26 +107,82 @@ export default function NoteScreen({ route, navigation }: any) {
                 style={styles.input}
                 value={title}
                 onChangeText={setTitle}
-                placeholder="Digite sua nota aqui"
+                placeholder={noteTexts.titlePlaceholder}
+                placeholderTextColor="#7A879E"
+              />
+
+              <TextInput
+                style={styles.input}
+                value={content}
+                onChangeText={setContent}
+                placeholder={noteTexts.contentPlaceholder}
                 placeholderTextColor="#7A879E"
                 multiline
                 textAlignVertical="top"
               />
 
-              <Pressable style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>Salvar</Text>
+              <View style={styles.locationRow}>
+                <Pressable
+                  style={styles.locationButton}
+                  onPress={handleCaptureLocation}
+                >
+                  <Ionicons name="locate" size={16} color="#FFFFFF" />
+                  <Text style={styles.locationButtonText}>
+                    {loadingLocation ? common.loading : noteTexts.location}
+                  </Text>
+                </Pressable>
+
+                {location && (
+                  <Pressable
+                    style={styles.mapButton}
+                    onPress={() => setShowMap(true)}
+                  >
+                    <Ionicons name="map" size={16} color="#FFFFFF" />
+                    <Text style={styles.locationButtonText}>
+                      {noteTexts.viewMap}
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+
+              {location && (
+                <Text style={styles.coordinatesText}>
+                  {noteTexts.coordinates}: {location.latitude.toFixed(4)},{" "}
+                  {location.longitude.toFixed(4)}
+                </Text>
+              )}
+
+              {locationError && (
+                <Text style={styles.errorText}>{locationError}</Text>
+              )}
+
+              <Pressable
+                style={styles.saveButton}
+                onPress={handleSave}
+                disabled={saving}
+              >
+                <Text style={styles.saveButtonText}>{noteTexts.save}</Text>
               </Pressable>
 
               <Pressable
                 style={styles.cancelButton}
                 onPress={() => navigation.goBack()}
+                disabled={saving}
               >
-                <Text style={styles.cancelButtonText}>Cancelar</Text>
+                <Text style={styles.cancelButtonText}>{common.cancel}</Text>
               </Pressable>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <MapModal
+        visible={showMap}
+        latitude={location?.latitude}
+        longitude={location?.longitude}
+        title={title}
+        onClose={() => setShowMap(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -148,7 +241,7 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   input: {
-    minHeight: 180,
+    minHeight: 72,
     backgroundColor: "#F8FAFF",
     borderWidth: 1,
     borderColor: "#D7E1F2",
@@ -158,6 +251,46 @@ const styles = StyleSheet.create({
     color: "#1F2B45",
     fontSize: 16,
     marginBottom: 12,
+  },
+  locationRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 8,
+  },
+  locationButton: {
+    flex: 1,
+    backgroundColor: "#2F5CA9",
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 8,
+  },
+  mapButton: {
+    flex: 1,
+    backgroundColor: "#17803D",
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 8,
+  },
+  locationButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+    fontSize: 13,
+  },
+  coordinatesText: {
+    fontSize: 12,
+    color: "#2F5CA9",
+    marginBottom: 10,
+  },
+  errorText: {
+    fontSize: 12,
+    color: "#B91C1C",
+    marginBottom: 10,
   },
   saveButton: {
     backgroundColor: "#24447A",

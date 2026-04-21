@@ -1,21 +1,25 @@
 import { auth, db } from "../../firebaseConfig";
 
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    updateDoc,
+    where,
 } from "firebase/firestore";
 
-type NoteDoc = {
+export type NoteDoc = {
   title: string;
   userId: string;
   createdAt: Date;
+  content?: string;
+  latitude?: number;
+  longitude?: number;
+  address?: string;
 };
 
 const notesCollection = collection(db, "notes");
@@ -44,12 +48,22 @@ const assertNoteOwnership = async (id: string, userId: string) => {
   return noteRef;
 };
 
-export const createNote = async (title: string) => {
+export const createNote = async (
+  title: string,
+  content?: string,
+  latitude?: number,
+  longitude?: number,
+  address?: string,
+) => {
   const userId = getCurrentUserId();
   return addDoc(notesCollection, {
     title,
+    content: content || "",
     userId,
     createdAt: new Date(),
+    latitude,
+    longitude,
+    address,
   });
 };
 
@@ -63,14 +77,47 @@ export const getNotes = async () => {
   }));
 };
 
-export const updateNote = async (id: string, title: string) => {
+export const updateNote = async (
+  id: string,
+  title: string,
+  content?: string,
+  latitude?: number,
+  longitude?: number,
+  address?: string,
+) => {
   const userId = getCurrentUserId();
   const noteRef = await assertNoteOwnership(id, userId);
-  return updateDoc(noteRef, { title });
+  return updateDoc(noteRef, {
+    title,
+    content: content || "",
+    latitude,
+    longitude,
+    address,
+  });
 };
 
 export const deleteNote = async (id: string) => {
   const userId = getCurrentUserId();
   const noteRef = await assertNoteOwnership(id, userId);
   return deleteDoc(noteRef);
+};
+
+export const getNote = async (id: string) => {
+  const userId = getCurrentUserId();
+  const noteRef = doc(db, "notes", id);
+  const noteSnapshot = await getDoc(noteRef);
+
+  if (!noteSnapshot.exists()) {
+    throw new Error("Nota nao encontrada.");
+  }
+
+  const noteData = noteSnapshot.data() as Partial<NoteDoc>;
+  if (noteData.userId !== userId) {
+    throw new Error("Sem permissao para acessar esta nota.");
+  }
+
+  return {
+    id: noteSnapshot.id,
+    ...noteData,
+  };
 };
