@@ -1,28 +1,38 @@
-import React, { useEffect, useState } from "react";
-
 import { NavigationContainer } from "@react-navigation/native";
-
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import { onAuthStateChanged } from "firebase/auth";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { auth } from "./firebaseConfig";
-
-import LoginScreen from "./src/screens/LoginScreen";
-
-import RegisterScreen from "./src/screens/RegisterScreen";
+import { I18nProvider } from "./src/contexts/I18nContext";
+import "./src/services/i18nService";
 
 import HomeScreen from "./src/screens/HomeScreen";
-
+import LoginScreen from "./src/screens/LoginScreen";
+import MapViewScreen from "./src/screens/MapViewScreen";
 import NoteScreen from "./src/screens/NoteScreen";
+import RegisterScreen from "./src/screens/RegisterScreen";
 
 const Stack = createNativeStackNavigator();
-export default function App() {
+
+function RootNavigator() {
+  const { t } = useTranslation();
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
     return unsubscribe;
   }, []);
+
+  if (loading) {
+    return null; // Ou uma splash screen
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -44,7 +54,12 @@ export default function App() {
             <Stack.Screen
               name="Note"
               component={NoteScreen}
-              options={{ title: "Nota" }}
+              options={{ title: t("note.title") }}
+            />
+            <Stack.Screen
+              name="MapView"
+              component={MapViewScreen}
+              options={{ title: t("map.title") }}
             />
           </>
         ) : (
@@ -57,11 +72,19 @@ export default function App() {
             <Stack.Screen
               name="Register"
               component={RegisterScreen}
-              options={{ title: "Cadastro" }}
+              options={{ title: t("auth.register") }}
             />
           </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <I18nProvider>
+      <RootNavigator />
+    </I18nProvider>
   );
 }
