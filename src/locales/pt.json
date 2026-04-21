@@ -1,0 +1,82 @@
+{
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "back": "Voltar",
+    "close": "Fechar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "logout": "Sair"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Senha",
+    "confirmPassword": "Confirmar senha",
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "doNotHaveAccount": "Não tem uma conta?",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "invalidEmail": "E-mail inválido",
+    "passwordTooShort": "Senha deve ter pelo menos 6 caracteres",
+    "passwordsDoNotMatch": "As senhas não correspondem",
+    "loginError": "Erro ao fazer login",
+    "registerError": "Erro ao se cadastrar",
+    "registerHere": "Cadastre-se aqui",
+    "loginHere": "Faça login aqui"
+  },
+  "home": {
+    "title": "Suas notas",
+    "subtitle": "Organize ideias de forma simples",
+    "newNote": "+ NOVA NOTA",
+    "emptyTitle": "Nenhuma nota encontrada",
+    "emptyMessage": "Comece criando sua primeira nota!",
+    "deleteConfirm": "Excluir nota",
+    "deleteMessage": "Tem certeza que deseja excluir esta nota?",
+    "confirmDelete": "Excluir",
+    "cancelDelete": "Cancelar",
+    "loadError": "Não foi possível carregar as notas",
+    "deleteError": "Não foi possível excluir a nota"
+  },
+  "note": {
+    "title": "Nota",
+    "noteTitle": "Título da nota",
+    "noteContent": "Conteúdo da nota",
+    "createdAt": "Criada em",
+    "location": "Localização",
+    "viewMap": "Ver no mapa",
+    "save": "Salvar nota",
+    "titlePlaceholder": "Digite o título da nota",
+    "contentPlaceholder": "Digite o conteúdo da nota",
+    "saveError": "Não foi possível salvar a nota",
+    "locationError": "Não foi possível obter a localização",
+    "noLocation": "Localização não disponível",
+    "coordinates": "Coordenadas",
+    "address": "Endereço"
+  },
+  "location": {
+    "permissionRequired": "Permissão de localização",
+    "permissionMessage": "O app precisa acessar sua localização para salvar as notas com coordenadas",
+    "permissionDenied": "Permissão de localização negada",
+    "obtainingLocation": "Obtendo localização...",
+    "locationObtained": "Localização obtida com sucesso"
+  },
+  "notifications": {
+    "permissionRequired": "Permissão de notificação",
+    "permissionMessage": "O app gostaria de enviar notificações",
+    "welcome": "Bem-vindo!",
+    "welcomeMessage": "Bem-vindo ao Notas App! Comece criando suas notas agora.",
+    "noteCreated": "Nota criada",
+    "noteCreatedMessage": "Sua nota foi criada com sucesso",
+    "permissionDenied": "Permissão de notificação negada"
+  },
+  "map": {
+    "title": "Mapa",
+    "noteLocation": "Local da nota",
+    "close": "Fechar",
+    "unavailable": "Mapa indisponivel no Expo Go. Use um Development Build."
+  }
+}
