@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
 import {
@@ -10,40 +11,41 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotaItem from "../components/NotaItem";
+import { useI18nContext } from "../contexts/I18nContext";
+import { useI18n } from "../hooks/useI18n";
 import { logout } from "../services/authService";
 import { deleteNote, getNotes } from "../services/noteService";
 
 export default function HomeScreen({ navigation }: any) {
+  const { home, common } = useI18n();
+  const { language, setLanguage } = useI18nContext();
   const [notes, setNotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadNotes = async () => {
+  const loadNotes = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getNotes();
       setNotes(data);
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Nao foi possivel carregar as notas.";
-      Alert.alert("Erro", message);
+      const message = error instanceof Error ? error.message : home.loadError;
+      Alert.alert(common.error, message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [common.error, home.loadError]);
 
   useFocusEffect(
     useCallback(() => {
-      loadNotes();
-    }, []),
+      void loadNotes();
+    }, [loadNotes]),
   );
 
   const handleDelete = (id: string) => {
-    Alert.alert("Excluir nota", "Tem certeza que deseja excluir esta nota?", [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(home.deleteConfirm, home.deleteMessage, [
+      { text: home.cancelDelete, style: "cancel" },
       {
-        text: "Excluir",
+        text: home.confirmDelete,
         style: "destructive",
         onPress: async () => {
           try {
@@ -51,10 +53,8 @@ export default function HomeScreen({ navigation }: any) {
             await loadNotes();
           } catch (error) {
             const message =
-              error instanceof Error
-                ? error.message
-                : "Nao foi possivel excluir a nota.";
-            Alert.alert("Erro", message);
+              error instanceof Error ? error.message : home.deleteError;
+            Alert.alert(common.error, message);
           }
         },
       },
@@ -65,6 +65,10 @@ export default function HomeScreen({ navigation }: any) {
     await logout();
   };
 
+  const handleLanguageChange = async () => {
+    await setLanguage(language === "pt" ? "en" : "pt");
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.bgCircleOne} />
@@ -73,21 +77,29 @@ export default function HomeScreen({ navigation }: any) {
       <View style={styles.container}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.title}>Suas notas</Text>
-            <Text style={styles.subtitle}>
-              Organize ideias de forma simples
-            </Text>
+            <Text style={styles.title}>{home.title}</Text>
+            <Text style={styles.subtitle}>{home.subtitle}</Text>
           </View>
-          <Pressable style={styles.logoutButton} onPress={handleLogout}>
-            <Text style={styles.logoutButtonText}>Sair</Text>
-          </Pressable>
+          <View style={styles.headerActions}>
+            <Pressable
+              style={styles.languageButton}
+              onPress={handleLanguageChange}
+            >
+              <Text style={styles.languageButtonText}>
+                {language === "pt" ? "EN" : "PT"}
+              </Text>
+            </Pressable>
+            <Pressable style={styles.logoutButton} onPress={handleLogout}>
+              <Ionicons name="log-out" size={16} color="#8C3A20" />
+            </Pressable>
+          </View>
         </View>
 
         <Pressable
           style={styles.newNoteButton}
           onPress={() => navigation.navigate("Note")}
         >
-          <Text style={styles.newNoteButtonText}>+ NOVA NOTA</Text>
+          <Text style={styles.newNoteButtonText}>{home.newNote}</Text>
         </Pressable>
 
         <FlatList
@@ -98,20 +110,18 @@ export default function HomeScreen({ navigation }: any) {
           ListEmptyComponent={
             <View style={styles.emptyCard}>
               <Text style={styles.emptyTitle}>
-                {loading ? "Carregando..." : "Nenhuma nota ainda"}
+                {loading ? common.loading : home.emptyTitle}
               </Text>
               {!loading && (
-                <Text style={styles.emptySubtitle}>
-                  Toque em Nova nota para comecar.
-                </Text>
+                <Text style={styles.emptySubtitle}>{home.emptyMessage}</Text>
               )}
             </View>
           }
           renderItem={({ item }) => (
             <NotaItem
               note={item}
-              onEdit={(note) => navigation.navigate("Note", { note })}
-              onDelete={handleDelete}
+              onPress={() => navigation.navigate("Note", { note: item })}
+              onDelete={() => handleDelete(item.id)}
             />
           )}
         />
@@ -153,6 +163,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 18,
+  },
+  headerActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  languageButton: {
+    backgroundColor: "#1E3050",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+  },
+  languageButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+    fontSize: 12,
   },
   title: {
     fontSize: 32,
