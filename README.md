@@ -1,6 +1,6 @@
-# App de Notas
-Aplicativo de notas, feito para checkpoint de mobile.
+# App de Notas Pro
 
+Aplicativo de notas em React Native com i18n, localização, mapa, notificações e build Android.
 
 ## Descricao do projeto
 
@@ -10,11 +10,18 @@ Funcionalidades implementadas:
 
 - Cadastro com e-mail e senha
 - Login e logout
+- Troca de idioma entre Português e Inglês
 - Criacao de nota
 - Listagem de notas do usuario logado
 - Edicao de nota
 - Exclusao de nota com confirmacao
 - Indicador de carregamento na tela principal
+- Captura automatica de latitude e longitude ao salvar a nota
+- Persistencia das coordenadas no Firestore
+- Visualizacao da nota em mapa com pin
+- Notificacao de boas-vindas ao autenticar
+- Notificacao de confirmacao ao criar nota
+- Geracao de APK via EAS Build
 
 Regra de negocio:
 
@@ -25,9 +32,13 @@ Regra de negocio:
 
 - React Native
 - Expo
+- i18next
 - Firebase Authentication
 - Cloud Firestore
 - React Navigation
+- expo-location
+- expo-notifications
+- react-native-maps
 - TypeScript
 
 ## Como rodar o projeto
@@ -81,6 +92,16 @@ firebase deploy --only firestore:rules
 npm run start
 ```
 
+## Build Android APK
+
+Para gerar o APK de instalacao:
+
+```bash
+eas build -p android --profile preview
+```
+
+O perfil `preview` esta configurado para gerar `.apk`.
+
 ## Video de demonstracao (max. 5 min)
 
 Link do video:
@@ -95,7 +116,6 @@ Link do video:
 - Nome: Renato Kenji Sugaki | RM:559810
 - Nome: Gabriel Wu Castro | RM:560210
 
-
 ## Estrutura de telas
 
 - Tela de Login
@@ -104,5 +124,7 @@ Link do video:
 - Tela para criar/editar nota
 
 ## Obs:
+
 - O projeto utiliza variaveis `EXPO_PUBLIC_*` para configuracao do Firebase.
 - Em caso de erro `auth/configuration-not-found`, validar se o provedor Email/Senha esta habilitado no Authentication.
+- Para testar o mapa, use um Development Build ou o APK gerado via EAS.

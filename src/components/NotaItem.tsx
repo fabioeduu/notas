@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useI18n } from "../hooks/useI18n";
 
 type Note = {
   id: string;
@@ -18,13 +19,14 @@ type NotaItemProps = {
 };
 
 export default function NotaItem({ note, onPress, onDelete }: NotaItemProps) {
+  const { note: noteTexts, common } = useI18n();
   const createdAt = note.createdAt?.toDate?.() ?? undefined;
 
   return (
     <Pressable style={styles.card} onPress={onPress}>
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={1}>
-          {note.title || "Sem titulo"}
+          {note.title || noteTexts.noTitle}
         </Text>
         {note.content ? (
           <Text style={styles.subtitle} numberOfLines={2}>
@@ -36,7 +38,7 @@ export default function NotaItem({ note, onPress, onDelete }: NotaItemProps) {
           <Text style={styles.dateText}>
             {createdAt ? createdAt.toLocaleDateString() : ""}
           </Text>
-          {note.latitude && note.longitude ? (
+          {note.latitude != null && note.longitude != null ? (
             <View style={styles.locationBadge}>
               <Ionicons name="location" size={12} color="#FFFFFF" />
               <Text style={styles.locationText}>
@@ -51,7 +53,7 @@ export default function NotaItem({ note, onPress, onDelete }: NotaItemProps) {
         style={[styles.button, styles.deleteButton]}
         onPress={onDelete}
       >
-        <Text style={styles.deleteButtonText}>Excluir</Text>
+        <Text style={styles.deleteButtonText}>{common.delete}</Text>
       </Pressable>
     </Pressable>
   );
