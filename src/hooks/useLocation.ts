@@ -7,9 +7,9 @@ import {
     requestLocationPermission,
 } from "../services/locationService";
 
-/**
- * Hook para usar localização de forma fácil
- */
+
+
+
 export const useLocation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

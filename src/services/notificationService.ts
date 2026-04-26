@@ -1,6 +1,7 @@
 import * as Notifications from "expo-notifications";
 
-// Configurar comportamento padrão de notificações
+
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -11,9 +12,9 @@ Notifications.setNotificationHandler({
   }),
 });
 
-/**
- * Solicita permissão para enviar notificações
- */
+
+
+
 export const requestNotificationPermission = async (): Promise<boolean> => {
   try {
     const { status: existingStatus } =
@@ -33,9 +34,9 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
   }
 };
 
-/**
- * Envia uma notificação local
- */
+
+
+
 export const sendNotification = async (
   title: string,
   body: string,
@@ -57,9 +58,9 @@ export const sendNotification = async (
   }
 };
 
-/**
- * Envia uma notificação agendada (opcional - para extras)
- */
+
+
+
 export const scheduleNotification = async (
   title: string,
   body: string,
@@ -86,9 +87,10 @@ export const scheduleNotification = async (
   }
 };
 
-/**
- * Limpa todas as notificações
- */
+
+
+
+
 export const clearAllNotifications = async () => {
   try {
     await Notifications.dismissAllNotificationsAsync();
@@ -97,9 +99,10 @@ export const clearAllNotifications = async () => {
   }
 };
 
-/**
- * Configura listener para quando notificação é recebida
- */
+
+
+
+
 export const setupNotificationListener = (
   callback: (notification: Notifications.Notification) => void,
 ) => {
@@ -110,9 +113,9 @@ export const setupNotificationListener = (
   };
 };
 
-/**
- * Configura listener para quando notificação é clicada
- */
+
+
+
 export const setupNotificationResponseListener = (
   callback: (response: Notifications.NotificationResponse) => void,
 ) => {

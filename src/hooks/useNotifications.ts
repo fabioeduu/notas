@@ -5,9 +5,8 @@ import {
     setupNotificationResponseListener,
 } from "../services/notificationService";
 
-/**
- * Hook para configurar listeners de notificações
- */
+
+
 export const useNotifications = (
   onNotificationReceived?: (notification: Notifications.Notification) => void,
   onNotificationResponse?: (
