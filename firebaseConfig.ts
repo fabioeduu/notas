@@ -1,11 +1,14 @@
 import { initializeApp } from "firebase/app";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as firebaseAuth from "firebase/auth";
-import { getAuth, initializeAuth, type Auth } from "firebase/auth";
+import {
+  getAuth,
+  initializeAuth,
+  type Auth,
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { Platform } from "react-native";
 
-// 🔥 Variáveis obrigatórias
 const requiredEnvVars = [
   "EXPO_PUBLIC_FIREBASE_API_KEY",
   "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN",
@@ -15,26 +18,20 @@ const requiredEnvVars = [
   "EXPO_PUBLIC_FIREBASE_APP_ID",
 ] as const;
 
-// 🔍 Verifica se faltam variáveis
 const missingVars = requiredEnvVars.filter(
-  (envName) => !process.env[envName]
+  (env) => !process.env[env]
 );
 
-// ⚠️ NÃO QUEBRAR APP EM PRODUÇÃO
 if (missingVars.length > 0) {
+  const message = `Missing Firebase env vars: ${missingVars.join(", ")}`;
+
   if (__DEV__) {
-    throw new Error(
-      `Missing Firebase env vars: ${missingVars.join(", ")}`
-    );
+    throw new Error(message);
   } else {
-    console.warn(
-      "Firebase env vars faltando:",
-      missingVars
-    );
+    console.warn(message);
   }
 }
 
-// 🚫 placeholders inválidos
 const invalidPlaceholders = [
   "SUA_API_KEY",
   "SEU_PROJECT",
@@ -44,19 +41,18 @@ const invalidPlaceholders = [
   "SEU_APP_ID",
 ];
 
-// 🔍 valida valores
 const assertValidFirebaseValue = (
   name: string,
   value: string | undefined
 ) => {
   if (!value) return;
 
-  if (
-    invalidPlaceholders.some((placeholder) =>
-      value.includes(placeholder)
-    )
-  ) {
-    const message = `Invalid Firebase env var: ${name} still uses placeholder`;
+  const isInvalid = invalidPlaceholders.some((placeholder) =>
+    value.includes(placeholder)
+  );
+
+  if (isInvalid) {
+    const message = `Invalid Firebase env var: ${name}`;
 
     if (__DEV__) {
       throw new Error(message);
@@ -66,17 +62,14 @@ const assertValidFirebaseValue = (
   }
 };
 
-// 🔍 valida cada env
 requiredEnvVars.forEach((env) => {
   assertValidFirebaseValue(env, process.env[env]);
 });
 
-// 🔍 valida API key
 const apiKey = process.env.EXPO_PUBLIC_FIREBASE_API_KEY;
 
 if (apiKey && !apiKey.startsWith("AIza")) {
-  const message =
-    "Invalid Firebase API key: expected key starting with AIza";
+  const message = "Invalid Firebase API key";
 
   if (__DEV__) {
     throw new Error(message);
@@ -85,7 +78,6 @@ if (apiKey && !apiKey.startsWith("AIza")) {
   }
 }
 
-// 🔥 Config Firebase
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -98,10 +90,8 @@ const firebaseConfig = {
     process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// 🔥 Init app
 const app = initializeApp(firebaseConfig);
 
-// 🔥 Auth (React Native)
 const getReactNativePersistence = (firebaseAuth as any)
   .getReactNativePersistence;
 
@@ -123,6 +113,5 @@ if (Platform.OS === "web") {
   }
 }
 
-// 🔥 Exports
 export const auth = authInstance;
 export const db = getFirestore(app);
