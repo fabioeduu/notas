@@ -1,4 +1,5 @@
 import { auth, db } from "../../firebaseConfig";
+import i18n from "./i18nService";
 
 import {
     addDoc,
@@ -27,7 +28,7 @@ const notesCollection = collection(db, "notes");
 const getCurrentUserId = () => {
   const userId = auth.currentUser?.uid;
   if (!userId) {
-    throw new Error("Usuario nao autenticado.");
+    throw new Error(i18n.t("note.userNotAuthenticated"));
   }
   return userId;
 };
@@ -37,12 +38,12 @@ const assertNoteOwnership = async (id: string, userId: string) => {
   const noteSnapshot = await getDoc(noteRef);
 
   if (!noteSnapshot.exists()) {
-    throw new Error("Nota nao encontrada.");
+    throw new Error(i18n.t("note.noteNotFound"));
   }
 
   const noteData = noteSnapshot.data() as Partial<NoteDoc>;
   if (noteData.userId !== userId) {
-    throw new Error("Sem permissao para alterar esta nota.");
+    throw new Error(i18n.t("note.noPermissionToUpdate"));
   }
 
   return noteRef;
@@ -108,12 +109,12 @@ export const getNote = async (id: string) => {
   const noteSnapshot = await getDoc(noteRef);
 
   if (!noteSnapshot.exists()) {
-    throw new Error("Nota nao encontrada.");
+    throw new Error(i18n.t("note.noteNotFound"));
   }
 
   const noteData = noteSnapshot.data() as Partial<NoteDoc>;
   if (noteData.userId !== userId) {
-    throw new Error("Sem permissao para acessar esta nota.");
+    throw new Error(i18n.t("note.noPermissionToAccess"));
   }
 
   return {

@@ -1,4 +1,5 @@
 import * as Location from "expo-location";
+import i18n from "./i18nService";
 
 export interface LocationCoordinates {
   latitude: number;
@@ -7,43 +8,40 @@ export interface LocationCoordinates {
   address?: string;
 }
 
-/**
- * Solicita permissão de localização
- */
+
+
+
 export const requestLocationPermission = async (): Promise<boolean> => {
   try {
     const { status: foregroundStatus } =
       await Location.requestForegroundPermissionsAsync();
 
     if (foregroundStatus === "granted") {
-      // Opcional: solicitar permissão de background se necessário
+      
+
       await Location.requestBackgroundPermissionsAsync();
       return true;
     }
 
     return false;
   } catch (error) {
-    console.error("Erro ao solicitar permissão de localização:", error);
+    console.error(i18n.t("location.permissionDenied"), error);
     return false;
   }
 };
 
-/**
- * Verifica se a permissão de localização foi concedida
- */
+
 export const checkLocationPermission = async (): Promise<boolean> => {
   try {
     const { status } = await Location.getForegroundPermissionsAsync();
     return status === "granted";
   } catch (error) {
-    console.error("Erro ao verificar permissão de localização:", error);
+    console.error(i18n.t("location.permissionDenied"), error);
     return false;
   }
 };
 
-/**
- * Obtém a localização atual do dispositivo
- */
+
 export const getCurrentLocation =
   async (): Promise<LocationCoordinates | null> => {
     try {
@@ -52,7 +50,7 @@ export const getCurrentLocation =
       if (!hasPermission) {
         const granted = await requestLocationPermission();
         if (!granted) {
-          throw new Error("Permissão de localização negada");
+          throw new Error(i18n.t("location.permissionDenied"));
         }
       }
 
@@ -67,15 +65,13 @@ export const getCurrentLocation =
         accuracy: accuracy ?? undefined,
       };
     } catch (error) {
-      console.error("Erro ao obter localização:", error);
+      console.error(i18n.t("location.obtainingLocation"), error);
       return null;
     }
   };
 
-/**
- * Converte coordenadas em endereço (geocoding reverso)
- * Opcional: use isso para mostrar endereço legível
- */
+
+
 export const getAddressFromCoordinates = async (
   latitude: number,
   longitude: number,
@@ -93,14 +89,13 @@ export const getAddressFromCoordinates = async (
 
     return null;
   } catch (error) {
-    console.error("Erro ao obter endereço:", error);
+    console.error(i18n.t("note.address"), error);
     return null;
   }
 };
 
-/**
- * Obtém a localização atual com endereço
- */
+
+
 export const getCurrentLocationWithAddress =
   async (): Promise<LocationCoordinates | null> => {
     try {
@@ -118,12 +113,12 @@ export const getCurrentLocationWithAddress =
         );
         location.address = address || undefined;
       } catch (error) {
-        console.warn("Não foi possível obter endereço:", error);
+        console.warn(i18n.t("note.address"), error);
       }
 
       return location;
     } catch (error) {
-      console.error("Erro ao obter localização com endereço:", error);
+      console.error(i18n.t("location.obtainingLocation"), error);
       return null;
     }
   };
