@@ -2,15 +2,15 @@ import React, { useState } from "react";
 
 import { Ionicons } from "@expo/vector-icons";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -29,36 +29,55 @@ export default function NoteScreen({ route, navigation }: any) {
     error: locationError,
   } = useLocation();
   const note = route.params?.note;
+  const initialLocation =
+    note?.latitude != null && note?.longitude != null
+      ? {
+          latitude: note.latitude,
+          longitude: note.longitude,
+          address: note.address,
+        }
+      : null;
 
   const [title, setTitle] = useState(note?.title || "");
   const [content, setContent] = useState(note?.content || "");
   const [saving, setSaving] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const effectiveLocation = location ?? initialLocation;
 
   const handleSave = async () => {
     if (!title.trim()) {
-      Alert.alert(common.error, "Digite um titulo para a nota.");
+      Alert.alert(common.error, noteTexts.noTitle);
       return;
     }
 
     try {
       setSaving(true);
+      const capturedLocation = await getLocation(true);
+      const finalLocation = capturedLocation ?? effectiveLocation;
+
+      if (!finalLocation) {
+        Alert.alert(common.error, noteTexts.locationError);
+        return;
+      }
+
+      const { latitude, longitude, address } = finalLocation;
+
       if (note) {
         await updateNote(
           note.id,
           title.trim(),
           content.trim(),
-          location?.latitude,
-          location?.longitude,
-          location?.address,
+          latitude,
+          longitude,
+          address,
         );
       } else {
         await createNote(
           title.trim(),
           content.trim(),
-          location?.latitude,
-          location?.longitude,
-          location?.address,
+          latitude,
+          longitude,
+          address,
         );
         await sendNotification(
           notifications.noteCreated,
@@ -95,12 +114,8 @@ export default function NoteScreen({ route, navigation }: any) {
           <View style={styles.bgCircleTwo} />
 
           <View style={styles.container}>
-            <Text style={styles.title}>
-              {note ? noteTexts.title : noteTexts.title}
-            </Text>
-            <Text style={styles.subtitle}>
-              Escreva algo que voce nao quer esquecer.
-            </Text>
+            <Text style={styles.title}>{noteTexts.title}</Text>
+            <Text style={styles.subtitle}>{noteTexts.subtitle}</Text>
 
             <View style={styles.card}>
               <TextInput
@@ -132,7 +147,7 @@ export default function NoteScreen({ route, navigation }: any) {
                   </Text>
                 </Pressable>
 
-                {location && (
+                {effectiveLocation && (
                   <Pressable
                     style={styles.mapButton}
                     onPress={() => setShowMap(true)}
@@ -145,10 +160,11 @@ export default function NoteScreen({ route, navigation }: any) {
                 )}
               </View>
 
-              {location && (
+              {effectiveLocation && (
                 <Text style={styles.coordinatesText}>
-                  {noteTexts.coordinates}: {location.latitude.toFixed(4)},{" "}
-                  {location.longitude.toFixed(4)}
+                  {noteTexts.coordinates}:{" "}
+                  {effectiveLocation.latitude.toFixed(4)},{" "}
+                  {effectiveLocation.longitude.toFixed(4)}
                 </Text>
               )}
 
@@ -178,8 +194,8 @@ export default function NoteScreen({ route, navigation }: any) {
 
       <MapModal
         visible={showMap}
-        latitude={location?.latitude}
-        longitude={location?.longitude}
+        latitude={effectiveLocation?.latitude}
+        longitude={effectiveLocation?.longitude}
         title={title}
         onClose={() => setShowMap(false)}
       />
