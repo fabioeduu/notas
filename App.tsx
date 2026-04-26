@@ -2,6 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
+import { Text } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { auth } from "./firebaseConfig";
@@ -22,15 +23,21 @@ function RootNavigator() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
+
     return unsubscribe;
   }, []);
 
   if (loading) {
-    return null; // Ou uma splash screen
+    return <Text>Carregando...</Text>;
   }
 
   return (
