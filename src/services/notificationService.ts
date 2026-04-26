@@ -1,19 +1,13 @@
 import * as Notifications from "expo-notifications";
 
-
-
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldShowBanner: true,
     shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
 });
-
-
-
 
 export const requestNotificationPermission = async (): Promise<boolean> => {
   try {
@@ -33,9 +27,6 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
     return false;
   }
 };
-
-
-
 
 export const sendNotification = async (
   title: string,
@@ -57,9 +48,6 @@ export const sendNotification = async (
     console.error("Erro ao enviar notificação:", error);
   }
 };
-
-
-
 
 export const scheduleNotification = async (
   title: string,
@@ -87,10 +75,6 @@ export const scheduleNotification = async (
   }
 };
 
-
-
-
-
 export const clearAllNotifications = async () => {
   try {
     await Notifications.dismissAllNotificationsAsync();
@@ -98,10 +82,6 @@ export const clearAllNotifications = async () => {
     console.error("Erro ao limpar notificações:", error);
   }
 };
-
-
-
-
 
 export const setupNotificationListener = (
   callback: (notification: Notifications.Notification) => void,
@@ -112,9 +92,6 @@ export const setupNotificationListener = (
     subscription.remove();
   };
 };
-
-
-
 
 export const setupNotificationResponseListener = (
   callback: (response: Notifications.NotificationResponse) => void,

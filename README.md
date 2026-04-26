@@ -102,13 +102,21 @@ eas build -p android --profile preview
 
 O perfil `preview` esta configurado para gerar `.apk`.
 
-## Video de demonstracao (max. 5 min)
+## Video de demonstracao.
 
-Link do video:
+## Link do video: 
 
-- video mobile: https://youtube.com/shorts/HrdyIHgJtgY
+## Fase 01 do projeto:
 
-- video firebase: https://youtu.be/UT0ByFGjR6c
+- 01 video mobile: https://youtube.com/shorts/HrdyIHgJtgY
+
+- 02 video firebase: https://youtu.be/UT0ByFGjR6c
+
+## Fase 02 do projeto:
+
+- 01 video mobile: https://youtube.com/shorts/8NcB0n8iybE?feature=share
+
+- 02 video firebase: https://youtu.be/MGGC0Mqi5Sk
 
 ## Integrantes
 
