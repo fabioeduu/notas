@@ -120,7 +120,7 @@ O perfil `preview` esta configurado para gerar `.apk`.
 
 ## Android App:
 
-- APK: https://expo.dev/artifacts/eas/jTp41eNyAydZQdDttrBBFb.apk
+- APK: https://expo.dev/artifacts/eas/brX5GCRDxeSDGtrV782ztq.apk
 
 
 
