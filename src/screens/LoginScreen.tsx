@@ -1,22 +1,22 @@
 import { FirebaseError } from "firebase/app";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useI18n } from "../hooks/useI18n";
 import { login } from "../services/authService";
 import {
-  requestNotificationPermission,
-  sendNotification,
+    requestNotificationPermission,
+    sendNotification,
 } from "../services/notificationService";
 
 export default function LoginScreen({ navigation }: any) {
@@ -33,19 +33,19 @@ export default function LoginScreen({ navigation }: any) {
     if (error instanceof FirebaseError) {
       switch (error.code) {
         case "auth/configuration-not-found":
-          return "Configuracao de login nao encontrada no Firebase. Ative Email/Senha em Authentication > Sign-in method.";
+          return auth.configurationNotFound;
         case "auth/operation-not-allowed":
-          return "Login por Email/Senha nao esta habilitado no Firebase Console.";
+          return auth.operationNotAllowedLogin;
         case "auth/invalid-email":
           return auth.invalidEmail;
         case "auth/user-not-found":
         case "auth/wrong-password":
         case "auth/invalid-credential":
-          return "E-mail ou senha incorretos.";
+          return auth.wrongCredentials;
         case "auth/too-many-requests":
-          return "Muitas tentativas. Tente novamente em alguns minutos.";
+          return auth.tooManyRequests;
         case "auth/network-request-failed":
-          return "Falha de rede. Verifique sua conexao.";
+          return auth.networkFailed;
         default:
           return `Falha no login (${error.code}).`;
       }
@@ -57,7 +57,7 @@ export default function LoginScreen({ navigation }: any) {
     const normalizedEmail = email.trim().toLowerCase();
 
     if (!normalizedEmail || !password) {
-      Alert.alert(common.error, "Preencha e-mail e senha.");
+      Alert.alert(common.error, common.fillFields);
       return;
     }
 
@@ -91,9 +91,9 @@ export default function LoginScreen({ navigation }: any) {
           <View style={styles.bgBlobTwo} />
 
           <View style={styles.container}>
-            <Text style={styles.brand}>NOTAS APP</Text>
+            <Text style={styles.brand}>{common.appName}</Text>
             <Text style={styles.title}>{auth.login}</Text>
-            <Text style={styles.subtitle}>Acesse sua conta para continuar</Text>
+            <Text style={styles.subtitle}>{auth.subtitle}</Text>
 
             <View style={styles.card}>
               <TextInput

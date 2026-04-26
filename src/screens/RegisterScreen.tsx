@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -28,19 +28,19 @@ export default function RegisterScreen({ navigation }: any) {
     if (error instanceof FirebaseError) {
       switch (error.code) {
         case "auth/configuration-not-found":
-          return "Configuracao de cadastro nao encontrada no Firebase. Ative Email/Senha em Authentication > Sign-in method.";
+          return auth.configurationNotFoundRegister;
 
         case "auth/email-already-in-use":
-          return "Este e-mail ja esta em uso.";
+          return auth.emailAlreadyInUse;
 
         case "auth/invalid-email":
-          return "E-mail invalido.";
+          return auth.invalidEmailRegister;
 
         case "auth/weak-password":
-          return "A senha precisa ter pelo menos 6 caracteres.";
+          return auth.weakPassword;
 
         case "auth/operation-not-allowed":
-          return "Cadastro por e-mail/senha nao esta habilitado no Firebase Console.";
+          return auth.operationNotAllowedRegister;
         default:
           return `Falha no cadastro (${error.code}).`;
       }
@@ -53,14 +53,14 @@ export default function RegisterScreen({ navigation }: any) {
     const normalizedEmail = email.trim().toLowerCase();
 
     if (!normalizedEmail || !password) {
-      Alert.alert(common.error, "Preencha e-mail e senha.");
+      Alert.alert(common.error, common.fillFields);
       return;
     }
 
     try {
       setLoading(true);
       await register(normalizedEmail, password);
-      Alert.alert(common.success, "Conta criada!");
+      Alert.alert(common.success, auth.accountCreated);
       navigation.goBack();
     } catch (error) {
       Alert.alert(common.error, getRegisterErrorMessage(error));
@@ -85,11 +85,9 @@ export default function RegisterScreen({ navigation }: any) {
           <View style={styles.bgBlobTwo} />
 
           <View style={styles.container}>
-            <Text style={styles.brand}>NOTAS APP</Text>
+            <Text style={styles.brand}>{common.appName}</Text>
             <Text style={styles.title}>{auth.register}</Text>
-            <Text style={styles.subtitle}>
-              Comece a guardar suas ideias em segundos
-            </Text>
+            <Text style={styles.subtitle}>{auth.subtitle}</Text>
 
             <View style={styles.card}>
               <TextInput
