@@ -1,12 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Modal,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { useI18n } from "../hooks/useI18n";
 
@@ -18,10 +18,8 @@ interface MapModalProps {
   onClose: () => void;
 }
 
-/**
- * Modal para visualizar o mapa da nota
- * Mostra a localização onde a nota foi criada
- */
+
+
 export default function MapModal({
   visible,
   latitude,
@@ -50,7 +48,7 @@ export default function MapModal({
     }
   }, [visible]);
 
-  const hasLocation = latitude !== undefined && longitude !== undefined;
+  const hasLocation = latitude != null && longitude != null;
 
   return (
     <Modal
@@ -88,7 +86,9 @@ export default function MapModal({
             <MarkerComponent
               coordinate={{ latitude: latitude!, longitude: longitude! }}
               title={title || map.noteLocation}
-              description={`${latitude?.toFixed(4)}, ${longitude?.toFixed(4)}`}
+              description={map.coordinatesLabel
+                .replace("{latitude}", latitude?.toFixed(4) ?? "")
+                .replace("{longitude}", longitude?.toFixed(4) ?? "")}
             />
           </MapViewComponent>
         ) : hasLocation ? (
@@ -127,9 +127,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#6366f1",
-    paddingBottom: 16,
+    paddingBottom: 18,
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 28,
+    minHeight: 78,
   },
   title: {
     fontSize: 18,
@@ -139,7 +140,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   closeButton: {
-    padding: 8,
+    padding: 16,
+    marginTop: 2,
     borderRadius: 8,
   },
   placeholder: {

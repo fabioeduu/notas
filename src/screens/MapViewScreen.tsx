@@ -32,12 +32,12 @@ export default function MapViewScreen({ route, navigation }: any) {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : i18nNote.saveError;
-      Alert.alert("Erro", message);
+      Alert.alert(i18nNote.title, message);
       navigation.goBack();
     } finally {
       setLoading(false);
     }
-  }, [i18nNote.saveError, navigation, noteId]);
+  }, [i18nNote.saveError, i18nNote.title, navigation, noteId]);
 
   useEffect(() => {
     void loadNote();
@@ -51,7 +51,7 @@ export default function MapViewScreen({ route, navigation }: any) {
     );
   }
 
-  if (!noteData || !noteData.latitude || !noteData.longitude) {
+  if (!noteData || noteData.latitude == null || noteData.longitude == null) {
     return (
       <SafeAreaView style={styles.center}>
         <View style={styles.errorContainer}>
@@ -86,7 +86,9 @@ export default function MapViewScreen({ route, navigation }: any) {
             longitude: noteData.longitude,
           }}
           title={noteData.title}
-          description={`Lat: ${noteData.latitude?.toFixed(4)}, Lng: ${noteData.longitude?.toFixed(4)}`}
+          description={map.coordinatesLabel
+            .replace("{latitude}", noteData.latitude?.toFixed(4))
+            .replace("{longitude}", noteData.longitude?.toFixed(4))}
         />
       </MapViewComponent>
     </SafeAreaView>
