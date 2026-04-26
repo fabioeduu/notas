@@ -1,17 +1,18 @@
 import { useTranslation } from "react-i18next";
 
-/**
- * Hook customizado para usar i18n de forma simples
- * Retorna objetos de tradução organizados por tópico
- */
+
+
+
+
 export const useI18n = () => {
   const { t, i18n } = useTranslation();
 
   return {
     t,
     i18n,
-    // Objetos de tradução organizados
+    
     common: {
+      appName: t("common.appName"),
       save: t("common.save"),
       cancel: t("common.cancel"),
       delete: t("common.delete"),
@@ -23,6 +24,7 @@ export const useI18n = () => {
       success: t("common.success"),
       warning: t("common.warning"),
       logout: t("common.logout"),
+      fillFields: t("common.fillFields"),
     },
     auth: {
       email: t("auth.email"),
@@ -30,6 +32,7 @@ export const useI18n = () => {
       confirmPassword: t("auth.confirmPassword"),
       login: t("auth.login"),
       register: t("auth.register"),
+      subtitle: t("auth.subtitle"),
       doNotHaveAccount: t("auth.doNotHaveAccount"),
       alreadyHaveAccount: t("auth.alreadyHaveAccount"),
       invalidEmail: t("auth.invalidEmail"),
@@ -37,6 +40,17 @@ export const useI18n = () => {
       passwordsDoNotMatch: t("auth.passwordsDoNotMatch"),
       loginError: t("auth.loginError"),
       registerError: t("auth.registerError"),
+      configurationNotFound: t("auth.configurationNotFound"),
+      operationNotAllowedLogin: t("auth.operationNotAllowedLogin"),
+      wrongCredentials: t("auth.wrongCredentials"),
+      tooManyRequests: t("auth.tooManyRequests"),
+      networkFailed: t("auth.networkFailed"),
+      configurationNotFoundRegister: t("auth.configurationNotFoundRegister"),
+      emailAlreadyInUse: t("auth.emailAlreadyInUse"),
+      invalidEmailRegister: t("auth.invalidEmailRegister"),
+      weakPassword: t("auth.weakPassword"),
+      operationNotAllowedRegister: t("auth.operationNotAllowedRegister"),
+      accountCreated: t("auth.accountCreated"),
       registerHere: t("auth.registerHere"),
       loginHere: t("auth.loginHere"),
     },
@@ -57,6 +71,7 @@ export const useI18n = () => {
       title: t("note.title"),
       noteTitle: t("note.noteTitle"),
       noteContent: t("note.noteContent"),
+      subtitle: t("note.subtitle"),
       createdAt: t("note.createdAt"),
       location: t("note.location"),
       viewMap: t("note.viewMap"),
@@ -66,6 +81,11 @@ export const useI18n = () => {
       saveError: t("note.saveError"),
       locationError: t("note.locationError"),
       noLocation: t("note.noLocation"),
+      noTitle: t("note.noTitle"),
+      userNotAuthenticated: t("note.userNotAuthenticated"),
+      noteNotFound: t("note.noteNotFound"),
+      noPermissionToUpdate: t("note.noPermissionToUpdate"),
+      noPermissionToAccess: t("note.noPermissionToAccess"),
       coordinates: t("note.coordinates"),
       address: t("note.address"),
     },
@@ -89,6 +109,7 @@ export const useI18n = () => {
       title: t("map.title"),
       noteLocation: t("map.noteLocation"),
       close: t("map.close"),
+      coordinatesLabel: t("map.coordinatesLabel"),
       unavailable: t("map.unavailable"),
     },
   };

@@ -1,5 +1,6 @@
 {
   "common": {
+    "appName": "Notes Pro",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
@@ -10,7 +11,8 @@
     "error": "Error",
     "success": "Success",
     "warning": "Warning",
-    "logout": "Logout"
+    "logout": "Logout",
+    "fillFields": "Please fill in the required fields."
   },
   "auth": {
     "email": "Email",
@@ -18,6 +20,7 @@
     "confirmPassword": "Confirm Password",
     "login": "Login",
     "register": "Register",
+    "subtitle": "Sign in to continue",
     "doNotHaveAccount": "Don't have an account?",
     "alreadyHaveAccount": "Already have an account?",
     "invalidEmail": "Invalid email",
@@ -25,6 +28,17 @@
     "passwordsDoNotMatch": "Passwords do not match",
     "loginError": "Login error",
     "registerError": "Registration error",
+    "configurationNotFound": "Login configuration not found in Firebase. Enable Email/Password in Authentication > Sign-in method.",
+    "operationNotAllowedLogin": "Email/password login is not enabled in the Firebase Console.",
+    "wrongCredentials": "Incorrect email or password.",
+    "tooManyRequests": "Too many attempts. Try again in a few minutes.",
+    "networkFailed": "Network failure. Check your connection.",
+    "configurationNotFoundRegister": "Registration configuration not found in Firebase. Enable Email/Password in Authentication > Sign-in method.",
+    "emailAlreadyInUse": "This email is already in use.",
+    "invalidEmailRegister": "Invalid email.",
+    "weakPassword": "Password must be at least 6 characters.",
+    "operationNotAllowedRegister": "Email/password registration is not enabled in the Firebase Console.",
+    "accountCreated": "Account created successfully!",
     "registerHere": "Register here",
     "loginHere": "Login here"
   },
@@ -45,6 +59,7 @@
     "title": "Note",
     "noteTitle": "Note Title",
     "noteContent": "Note Content",
+    "subtitle": "Write something you don't want to forget.",
     "createdAt": "Created at",
     "location": "Location",
     "viewMap": "View on map",
@@ -54,6 +69,11 @@
     "saveError": "Could not save note",
     "locationError": "Could not obtain location",
     "noLocation": "Location not available",
+    "noTitle": "Untitled",
+    "userNotAuthenticated": "User not authenticated.",
+    "noteNotFound": "Note not found.",
+    "noPermissionToUpdate": "No permission to update this note.",
+    "noPermissionToAccess": "No permission to access this note.",
     "coordinates": "Coordinates",
     "address": "Address"
   },
@@ -77,6 +97,7 @@
     "title": "Map",
     "noteLocation": "Note Location",
     "close": "Close",
+    "coordinatesLabel": "Lat {latitude}, Lng {longitude}",
     "unavailable": "Map unavailable in Expo Go. Use a Development Build."
   }
 }

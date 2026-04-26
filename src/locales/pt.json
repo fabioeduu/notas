@@ -1,5 +1,6 @@
 {
   "common": {
+    "appName": "Notas Pro",
     "save": "Salvar",
     "cancel": "Cancelar",
     "delete": "Excluir",
@@ -10,7 +11,8 @@
     "error": "Erro",
     "success": "Sucesso",
     "warning": "Aviso",
-    "logout": "Sair"
+    "logout": "Sair",
+    "fillFields": "Preencha os campos obrigatórios."
   },
   "auth": {
     "email": "E-mail",
@@ -18,6 +20,7 @@
     "confirmPassword": "Confirmar senha",
     "login": "Entrar",
     "register": "Cadastrar",
+    "subtitle": "Acesse sua conta para continuar",
     "doNotHaveAccount": "Não tem uma conta?",
     "alreadyHaveAccount": "Já tem uma conta?",
     "invalidEmail": "E-mail inválido",
@@ -25,6 +28,17 @@
     "passwordsDoNotMatch": "As senhas não correspondem",
     "loginError": "Erro ao fazer login",
     "registerError": "Erro ao se cadastrar",
+    "configurationNotFound": "Configuração de login não encontrada no Firebase. Ative Email/Senha em Authentication > Sign-in method.",
+    "operationNotAllowedLogin": "Login por e-mail/senha não está habilitado no Firebase Console.",
+    "wrongCredentials": "E-mail ou senha incorretos.",
+    "tooManyRequests": "Muitas tentativas. Tente novamente em alguns minutos.",
+    "networkFailed": "Falha de rede. Verifique sua conexão.",
+    "configurationNotFoundRegister": "Configuração de cadastro não encontrada no Firebase. Ative Email/Senha em Authentication > Sign-in method.",
+    "emailAlreadyInUse": "Este e-mail já está em uso.",
+    "invalidEmailRegister": "E-mail inválido.",
+    "weakPassword": "A senha precisa ter pelo menos 6 caracteres.",
+    "operationNotAllowedRegister": "Cadastro por e-mail/senha não está habilitado no Firebase Console.",
+    "accountCreated": "Conta criada com sucesso!",
     "registerHere": "Cadastre-se aqui",
     "loginHere": "Faça login aqui"
   },
@@ -45,6 +59,7 @@
     "title": "Nota",
     "noteTitle": "Título da nota",
     "noteContent": "Conteúdo da nota",
+    "subtitle": "Escreva algo que você não quer esquecer.",
     "createdAt": "Criada em",
     "location": "Localização",
     "viewMap": "Ver no mapa",
@@ -54,6 +69,11 @@
     "saveError": "Não foi possível salvar a nota",
     "locationError": "Não foi possível obter a localização",
     "noLocation": "Localização não disponível",
+    "noTitle": "Sem título",
+    "userNotAuthenticated": "Usuário não autenticado.",
+    "noteNotFound": "Nota não encontrada.",
+    "noPermissionToUpdate": "Sem permissão para alterar esta nota.",
+    "noPermissionToAccess": "Sem permissão para acessar esta nota.",
     "coordinates": "Coordenadas",
     "address": "Endereço"
   },
@@ -77,6 +97,7 @@
     "title": "Mapa",
     "noteLocation": "Local da nota",
     "close": "Fechar",
+    "coordinatesLabel": "Lat {latitude}, Lng {longitude}",
     "unavailable": "Mapa indisponivel no Expo Go. Use um Development Build."
   }
 }
