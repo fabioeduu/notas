@@ -114,9 +114,15 @@ O perfil `preview` esta configurado para gerar `.apk`.
 
 ## Fase 02 do projeto:
 
-- 01 video mobile: https://youtube.com/shorts/8NcB0n8iybE?feature=share
+- 01 video mobile: https://youtube.com/shorts/61NdlsfnDeE
 
-- 02 video firebase: https://youtu.be/MGGC0Mqi5Sk
+- 02 video firebase: https://youtu.be/6WxyaO1_GOM
+
+## Android App:
+
+- APK: https://expo.dev/artifacts/eas/jTp41eNyAydZQdDttrBBFb.apk
+
+
 
 ## Integrantes
 
